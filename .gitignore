@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.env
+*.env
+venv/
+.venv/
+env/
+
+# Node
+node_modules/
+dist/
+.DS_Store
+
+# Models / large files
+*.bin
+*.safetensors
+*.onnx
+*.pt
+*.pth
+models/
+reference_images/
+
+# Logs
+*.log
