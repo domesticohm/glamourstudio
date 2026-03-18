@@ -51,7 +51,12 @@
       "Bash(gh auth:*)",
       "Bash(git init:*)",
       "Bash(git remote:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git config:*)",
+      "Bash(git push:*)",
+      "Bash(vercel whoami:*)",
+      "Bash(vercel:*)"
     ]
   }
 }
