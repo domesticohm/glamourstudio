@@ -7,8 +7,8 @@ type Stage = "upload" | "generating" | "done" | "error";
 type Vibe  = "glamour" | "school";
 
 const VIBES: { value: Vibe; label: string }[] = [
-  { value: "glamour", label: "Glamour Studio" },
-  { value: "school",  label: "1990s School Photo" },
+  { value: "glamour", label: "✦ Glamour Studio" },
+  { value: "school",  label: "📸 1990s School Photo" },
 ];
 
 const POLL_MS = 1500;
@@ -72,23 +72,36 @@ export default function App() {
     setError(null);
   };
 
+  const isGlamour = vibe === "glamour";
+
   return (
-    <div className="min-h-screen bg-stone-950 text-stone-100 flex flex-col items-center py-12 px-4">
+    <div
+      className={`min-h-screen flex flex-col items-center py-12 px-4 transition-all duration-700 ${
+        isGlamour ? "bg-glamour text-amber-50" : "bg-school text-white"
+      }`}
+    >
       {/* Sticky vibe selector */}
-      <div className="sticky top-0 z-10 w-full bg-stone-950/90 backdrop-blur border-b border-stone-800/60 py-3 px-4 mb-8">
+      <div className={`sticky top-0 z-10 w-full backdrop-blur border-b py-3 px-4 mb-8 transition-all duration-700 ${
+        isGlamour
+          ? "bg-black/80 border-amber-900/40"
+          : "bg-[#0d0b2a]/85 border-[#ff2d78]/30"
+      }`}>
         <div className="max-w-md mx-auto flex items-center gap-3">
-          <label className="text-stone-400 text-sm font-medium whitespace-nowrap">
-            Choose Your Vibe
+          <label className={`text-sm font-medium whitespace-nowrap ${
+            isGlamour ? "font-cinzel text-amber-600 tracking-widest uppercase text-xs" : "font-fredoka text-[#00d4ff] text-base"
+          }`}>
+            {isGlamour ? "Choose Your Vibe" : "Choose Your Vibe"}
           </label>
           <select
             value={vibe}
             onChange={e => setVibe(e.target.value as Vibe)}
             disabled={stage === "generating"}
-            className="flex-1 bg-stone-900 border border-stone-700 text-stone-200 text-sm
-                       rounded-xl px-3 py-2 appearance-none cursor-pointer
-                       focus:outline-none focus:ring-2 focus:ring-amber-500/50
-                       disabled:opacity-40 disabled:cursor-not-allowed
-                       hover:border-stone-500 transition-colors"
+            className={`flex-1 text-sm rounded-xl px-3 py-2 appearance-none cursor-pointer
+                       focus:outline-none transition-colors disabled:opacity-40 disabled:cursor-not-allowed ${
+              isGlamour
+                ? "bg-[#110810] border border-amber-900/50 text-amber-200 focus:ring-2 focus:ring-amber-700/50 hover:border-amber-700/60"
+                : "bg-[#120d2e] border-2 border-[#ff2d78]/60 text-white focus:ring-2 focus:ring-[#ff2d78]/50 hover:border-[#ff2d78]"
+            }`}
           >
             {VIBES.map(v => (
               <option key={v.value} value={v.value}>{v.label}</option>
@@ -99,17 +112,42 @@ export default function App() {
 
       {/* Header */}
       <div className="mb-8 text-center">
-        <h1 className="text-3xl font-bold tracking-tight text-amber-400">GlamourStudio</h1>
-        <p className="text-stone-500 text-sm mt-1">
-          {vibe === "glamour"
-            ? "Upload any photo · AI generates your 1970s double-exposure portrait"
-            : "Upload any photo · AI generates your 1990s school portrait"}
-        </p>
+        {isGlamour ? (
+          <>
+            <h1 className="font-cinzel text-4xl font-bold tracking-[0.15em] uppercase"
+                style={{ color: "#d4a520", textShadow: "0 0 30px #d4a52060, 0 2px 4px #000" }}>
+              GlamourStudio
+            </h1>
+            <div className="flex items-center justify-center gap-3 mt-2">
+              <div className="h-px w-12 bg-gradient-to-r from-transparent to-amber-700/60" />
+              <p className="text-amber-700/80 text-xs font-cinzel tracking-widest uppercase">
+                1970s · 1980s · Double Exposure
+              </p>
+              <div className="h-px w-12 bg-gradient-to-l from-transparent to-amber-700/60" />
+            </div>
+          </>
+        ) : (
+          <>
+            <h1 className="font-fredoka text-4xl"
+                style={{ color: "#ff2d78", textShadow: "0 0 20px #ff2d7880, 0 0 40px #ff2d7840, 2px 2px 0 #00d4ff" }}>
+              GlamourStudio
+            </h1>
+            <p className="font-fredoka text-[#00d4ff] text-lg mt-1"
+               style={{ textShadow: "0 0 10px #00d4ff60" }}>
+              📷 1990s School Photo Edition 📷
+            </p>
+            <div className="flex justify-center gap-1 mt-2">
+              {["★","★","★","★","★"].map((s, i) => (
+                <span key={i} className="text-[#a3ff00] text-sm">★</span>
+              ))}
+            </div>
+          </>
+        )}
       </div>
 
       <div className="w-full max-w-md space-y-6">
         {stage === "upload" && (
-          <UploadZone onFiles={handleFile} />
+          <UploadZone onFiles={handleFile} vibe={vibe} />
         )}
 
         {(stage === "generating" || stage === "done" || stage === "error") && (
@@ -119,6 +157,7 @@ export default function App() {
             resultUrl={resultUrl}
             error={error}
             onReset={handleReset}
+            vibe={vibe}
           />
         )}
       </div>
